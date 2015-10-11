@@ -14,7 +14,7 @@ osx homebrew:
 
 [avr-libc manual](http://nongnu.org/avr-libc/user-manual/)
 
-## I/O - <avr/io.h> ##
+## I/O - \<avr/io.h> ##
 
 Pins are grouped together into ports.  Each port has three
 registers. Each bit of a register controls a single pin.
@@ -38,7 +38,7 @@ Note: the LSB is right most bit: 0b00000100 = 4
 * [ATmega8 LED example](http://www.tuxgraphics.org/electronics/200904/avr-c-programming.shtml)
 
 
-## delay - <util/delay.h> ##
+## delay - \<util/delay.h> ##
 
 Built in delay function:
 
@@ -57,7 +57,7 @@ silently switch to a low resolution 0.1ms timer, so the max is 6.5535
 sec.
 
 
-## watchdog timer - <avr/wdt.h> ##
+## watchdog timer - \<avr/wdt.h> ##
 
 
 
