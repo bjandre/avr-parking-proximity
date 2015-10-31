@@ -13,10 +13,10 @@
 //
 // Actually a single RGB led that turns on each color sequentially.
 //
-// RGB LED is common ?cathode (common connected to 3.3V, invididual
-// pins connected to ground)? led on when individual ping goes low,
-// off when high.  Individual pins of LED connected to pin PB1, PB2,
-// PB3
+// RGB LED is common anode, RABG, (common connected to 3.3V,
+// invididual pins connected to ground). led on when individual ping
+// goes low, allowing current through. off when high.  Individual pins
+// of LED connected to pin PB1, PB2, PB3
 
     
 // #define F_CPU 1000000UL // clock frequency (Hz) defined in makefile!

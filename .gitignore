@@ -1,4 +1,17 @@
-*.o
+# emacs
 *~
+
+# compiler
+*.o
 *.elf
 *.hex
+
+# kicad files
+*.bak
+*.bck
+*.raw
+*.log
+*.dcm
+*.kicad_pcb-bak
+*autosave*
+*cache*
