@@ -11,7 +11,10 @@
 // 
 // Blink a single LED on an 8-bit avr attiny 2313
 // 
-    
+//
+// schematic is the same as for the three leds problem.
+//
+
 // #define F_CPU 1000000UL // clock frequency (Hz) defined in makefile!
 
 #include <avr/io.h>
