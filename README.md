@@ -114,6 +114,23 @@ sec.
 ## watchdog timer - \<avr/wdt.h> ##
 
 
+# interrupts #
+
+Three different interrupt sources. Each has it's own bit in a
+register. In addition there is a global interrupt enable bit. An
+interrupt's bit and the global enable bit must be set for an interrupt
+to be enabled (I bit in SREG). The global bit is deactivate when an
+interrupt occurs. It can be reactivated for nested interrupts, or will
+automatically be reactivated when a return from interrupt instruction
+is executed.
+
+* SREG - AVR (S)tatus (R)egister
+  * I - bit 7, Global Interrupt Enable - must be set for any interrupt
+    to occur. Cleared by hardware after an interrupt has occured. RETI
+    instruction resets it. Can also be set and cleared by the
+    application with the SEI and CLI instructions.
+
+## \<avr/interrupt.h> ##
 
 # Misc. reminders #
 

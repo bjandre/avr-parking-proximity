@@ -1,7 +1,7 @@
 (export (version D)
   (design
-    (source /Users/andreb/projects/avr/attiny/three-leds/three-leds/three-leds.sch)
-    (date "Friday, October 30, 2015 'AMt' 11:33:50 AM")
+    (source /Users/andreb/projects/avr/attiny/three-leds/three-leds.kicad/three-leds.sch)
+    (date "Saturday, October 31, 2015 'PMt' 01:51:49 PM")
     (tool "Eeschema (2015-10-16 BZR 6271)-product")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -46,6 +46,17 @@
       (sheetpath (names /) (tstamps /))
       (tstamp 562BE69A)))
   (libparts
+    (libpart (lib device) (part R)
+      (description Resistor)
+      (footprints
+        (fp R_*)
+        (fp Resistor_*))
+      (fields
+        (field (name Reference) R)
+        (field (name Value) R))
+      (pins
+        (pin (num 1) (name ~) (type passive))
+        (pin (num 2) (name ~) (type passive))))
     (libpart (lib atmel) (part ATTINY2313-P)
       (description "PDIP20, 2k Flash, 128B SRAM, 128B EEPROM, Debug Wire")
       (docs http://www.atmel.com/Images/doc2543.pdf)
@@ -83,18 +94,7 @@
         (pin (num 1) (name RED_CATHODE) (type passive))
         (pin (num 2) (name COMMON_ANODE) (type passive))
         (pin (num 3) (name BLUE_CATHODE) (type passive))
-        (pin (num 4) (name GREEN_CATHODE) (type passive))))
-    (libpart (lib device) (part R)
-      (description Resistor)
-      (footprints
-        (fp R_*)
-        (fp Resistor_*))
-      (fields
-        (field (name Reference) R)
-        (field (name Value) R))
-      (pins
-        (pin (num 1) (name ~) (type passive))
-        (pin (num 2) (name ~) (type passive)))))
+        (pin (num 4) (name GREEN_CATHODE) (type passive)))))
   (libraries
     (library (logical atmel)
       (uri "/Users/andreb/Library/Application Support/kicad/library/atmel.lib"))
