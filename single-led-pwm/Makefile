@@ -8,6 +8,10 @@ OBJS = \
 	$(SRCS:%.c=%.o)
 
 
+CLOCK=1000000
+
+CFLAGS += -DF_CPU=$(CLOCK)
+
 all : $(HEX)
 
 flash : all

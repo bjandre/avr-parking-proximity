@@ -1,0 +1,55 @@
+# -*- mode: Makefile -*-
+include ../Makefile.inc
+
+HEADERS = \
+	bit-ops.h \
+	rgb-led.h
+
+TEST_BIT_OPS_SRCS = \
+	bit-ops.c \
+	test-bit-ops.c
+
+TEST_BIT_OPS_OBJS = \
+	$(TEST_BIT_OPS_SRCS:%.c=%.o)
+
+TEST_BIT_OPS_EXE = \
+	test-bit-ops
+
+TEST_RGB_LED_SRCS = \
+	bit-ops.c \
+	rgb-led.c \
+	test-rgb-led.c
+
+TEST_RGB_LED_OBJS = \
+	$(TEST_RGB_LED_SRCS:%.c=%.o)
+
+TEST_RGB_LED_EXE = \
+	test-rgb-led
+
+CMOCKA_INCLUDE_DIR=../3rd-party/build-Debug/include
+CMOCKA_LIBRARY=../3rd-party/build-Debug/lib/libcmocka.a
+
+CC = cc
+CFLAGS = -std=c11 -g -I$(CMOCKA_INCLUDE_DIR)
+
+all : test
+
+#
+# Generic rule to generate objects
+#
+%.o : %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+test-bit-ops : $(TEST_BIT_OPS_OBJS)
+	$(CC) $(CMOCKA_LIBRARY) $(TEST_BIT_OPS_OBJS) -o $@
+
+test-rgb-led : $(TEST_RGB_LED_OBJS)
+	$(CC) $(CMOCKA_LIBRARY) $(TEST_RGB_LED_OBJS) -o $@
+
+test : $(TEST_BIT_OPS_EXE) $(TEST_RGB_LED_EXE)
+	./test-bit-ops
+	./test-rgb-led
+
+clean :
+	rm -rf *~ *.o lfuse.hex hfuse.hex efuse.hex $(HEX) $(ELF) $(TEST_BIT_OPS_EXE) $(TEST_RGB_LED_EXE)
+

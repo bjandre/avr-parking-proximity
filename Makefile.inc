@@ -12,11 +12,11 @@ CHIP = attiny2313
 WRITE_FUSES = -U lfuse:w:0x7f:m -U hfuse:w:0xdf:m -U efuse:w:0xff:m 
 READ_FUSES = -U lfuse:r:lfuse.hex:i -U hfuse:r:hfuse.hex:i -U efuse:r:efuse.hex:i 
 
-CLOCK=1000000
-
 CC = avr-gcc
-CFLAGS = -Wall -Os
-CFLAGS += -DF_CPU=$(CLOCK) -mmcu=$(CHIP)
+CFLAGS = -std=c11 -Wall -Os -DNDEBUG
+CFLAGS += -mmcu=$(CHIP)
+# NOTE(bja, 2015-01) Set -DF_CPU=N to clock speed in individual
+# makefiles so it can vary as needed.
 
 PROGRAMMER = usbtiny
 AVRDUDE = avrdude

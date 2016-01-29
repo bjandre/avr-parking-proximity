@@ -8,6 +8,10 @@ OBJS = \
 	$(SRCS:%.c=%.o)
 
 
+CLOCK=2000000
+
+CFLAGS += -DF_CPU=$(CLOCK)
+
 all : $(HEX)
 
 flash : all
@@ -26,7 +30,7 @@ read-elf : $(ELF)
 all : $(HEX)
 
 $(ELF) :$(OBJS)
-	$(CC) -o $@ $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
 
 $(HEX) : $(ELF)
 	rm -f $(HEX)

@@ -15,3 +15,6 @@
 *.kicad_pcb-bak
 *autosave*
 *cache*
+
+# 3rd party library builds
+3rd-party/build-*

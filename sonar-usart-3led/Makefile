@@ -1,14 +1,18 @@
 include ../Makefile.inc
 
-HEX = three-leds.hex
-ELF = three-leds.elf
+
+HEX = sonar-usart-3led.hex
+ELF = sonar-usart-3led.elf
 SRCS = \
-	three-leds.c
+	bit-ops.c \
+	rgb-led.c \
+	sonar-usart-3led.c
+
 OBJS = \
 	$(SRCS:%.c=%.o)
 
 
-CLOCK=1000000
+CLOCK=2000000
 
 CFLAGS += -DF_CPU=$(CLOCK)
 
@@ -24,7 +28,7 @@ read-elf : $(ELF)
 # Generic rule to generate objects
 #
 %.o : %.c 
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 
 all : $(HEX)
