@@ -9,15 +9,10 @@
 // 
 
 // 
-// Blink three LEDs in sequence on an 8-bit avr attiny 2313, driving
-// LEDs with PWM.
+// sonar parking proximity sensor, using rgb led colors as distance
+// indicator.  red --> too close, blue --> too far away, green -->
+// good distance.
 //
-// Actually a single RGB led that turns on each color sequentially.
-//
-// RGB LED is common anode, RABG, (common connected to 3.3V,
-// invididual pins connected to ground). led on when individual ping
-// goes low, allowing current through. off when high.  Individual pins
-// of LED connected to pin PB1, PB2, PB3
 
     
 // #define F_CPU 1000000UL // clock frequency (Hz) defined in makefile!
@@ -38,6 +33,38 @@
 
 #define delay1 250.0
 #define delay2 6500.0
+
+void usart_init(void);
+void led_pwm_init(void);
+void cycle_led(void);
+
+
+int main(void) {
+    usart_init();
+    led_pwm_init();
+    cycle_led();
+    
+
+    PORTB = set_led_red(PORTB);
+    PORTB = turn_led_on(PORTB);
+    _delay_ms(delay1);
+    OCR0A = 0x00;
+    for(;;) {
+
+        // change PWM pulse width every 2 seconds, note 8-bit pwm!
+        /* PORTB = set_led_blue(PORTB); */
+        /* OCR0A = 0x40; */
+        /* _delay_ms(delay2); */
+        /* PORTB = set_led_green(PORTB); */
+        /* OCR0A = 0xA0; */
+        /* _delay_ms(delay2); */
+        //        PORTB = set_led_red(PORTB);
+        OCR0A += 0x01;
+        _delay_ms(delay1);
+    }
+  
+    return 0;
+}
 
 
 void usart_init(void) {
@@ -71,6 +98,7 @@ void usart_init(void) {
     
 } // end usart_init()
 
+
 void led_pwm_init(void) {
     // set output pins for led and pwm signal
     // set pins for port b0=G, b1=B, b2=A, b3=R to output
@@ -95,12 +123,8 @@ void led_pwm_init(void) {
 } // end led_init()
 
 
-int main(void) {
-    usart_init();
-    led_pwm_init();
-    
-    // cycle the led
-    //PORTB = turn_led_off(PORTB);
+void cycle_led(void) {
+    PORTB = turn_led_on(PORTB);
     _delay_ms(delay1);
     PORTB = set_led_red(PORTB);
     _delay_ms(delay1);
@@ -110,25 +134,4 @@ int main(void) {
     _delay_ms(delay1);
     PORTB = turn_led_off(PORTB);
     _delay_ms(delay1);
-    PORTB = set_led_red(PORTB);
-    PORTB = turn_led_on(PORTB);
-    _delay_ms(delay1);
-    OCR0A = 0x00;
-    for(;;) {
-
-        // change PWM pulse width every 2 seconds, note 8-bit pwm!
-        /* PORTB = set_led_blue(PORTB); */
-        /* OCR0A = 0x40; */
-        /* _delay_ms(delay2); */
-        /* PORTB = set_led_green(PORTB); */
-        /* OCR0A = 0xA0; */
-        /* _delay_ms(delay2); */
-        //        PORTB = set_led_red(PORTB);
-        OCR0A += 0x01;
-        _delay_ms(delay1);
-    }
-  
-    return 0;
 }
-
-  
