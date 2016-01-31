@@ -18,6 +18,8 @@
 // #define F_CPU 1000000UL // clock frequency (Hz) defined in makefile!
 
 #include <inttypes.h>
+
+#include <avr/interrupt.h>
 #include <avr/io.h>
 #include <util/delay.h>
 
@@ -44,7 +46,8 @@ int main(void) {
     led_pwm_init();
     cycle_led();
     
-
+    sei(); // enable global interupts
+    
     PORTB = set_led_red(PORTB);
     PORTB = turn_led_on(PORTB);
     _delay_ms(delay1);
@@ -98,6 +101,11 @@ void usart_init(void) {
     
 } // end usart_init()
 
+
+ISR(USART_RX_vect, ISR_BLOCK) {
+    char received_byte;
+    received_byte = UDR;
+}
 
 void led_pwm_init(void) {
     // set output pins for led and pwm signal
