@@ -29,6 +29,8 @@
 #define BAUD 9600
 #include <util/setbaud.h>
 
+#include "bit-ops.h"
+
 // define common macro definitions
 #include "sonar-usart-3led.h"
 // relies on led pin macros defined in the sonar-usart-3led.h
@@ -48,20 +50,22 @@ void usart_init(void) {
     //   * one stop bit
 
     // RX receiver enabled
-    UCSRB |= (1 << RXEN);
+    UCSRB |= set_bit_true(UCSRB, RXEN);
     // RX complete interrupt enable
-    UCSRB |= (1 << RXCIE);
+    UCSRB |= set_bit_true(UCSRB, RXCIE);
 
     // asynchronous mode
-    UCSRC |= (1 << UMSEL);
+    UCSRC |= set_bit_true(UCSRC, UMSEL);
     // no parity
-    UCSRC |= (0 << UPM0) | (0 << UPM1);
+    UCSRC |= set_bit_true(UCSRC, UPM0);
+    UCSRC |= set_bit_false(UCSRC, UPM1);
     // one stop bit
-    UCSRC |= (0 << USBS);
+    UCSRC |= set_bit_false(UCSRC, USBS);
     // USART 8 bit characters:
-    UCSRC |= (1 << UCSZ0) | (1 << UCSZ1);
-    UCSRB |= (0 << UCSZ2);
-    // 9600 baud
+    UCSRC |= set_bit_true(UCSRC, UCSZ0);
+    UCSRC |= set_bit_true(UCSRC, UCSZ1);
+    UCSRB |= set_bit_false(UCSRB, UCSZ2);
+    // 9600 baud, set by util/setbaud macros
     UBRRH = UBRRH_VALUE;
     UBRRL = UBRRL_VALUE;
     
@@ -71,21 +75,21 @@ void led_pwm_init(void) {
     // set output pins for led and pwm signal
     // set pins for port b0=G, b1=B, b2=A, b3=R to output
     DDRB = 0;
-    DDRB |= (1 << LED_RED_PIN);
-    DDRB |= (1 << LED_ANODE_PIN);
-    DDRB |= (1 << LED_BLUE_PIN);
-    DDRB |= (1 << LED_GREEN_PIN);
+    DDRB |= set_bit_true(DDRB, LED_RED_PIN);
+    DDRB |= set_bit_true(DDRB, LED_ANODE_PIN);
+    DDRB |= set_bit_true(DDRB, LED_BLUE_PIN);
+    DDRB |= set_bit_true(DDRB, LED_GREEN_PIN);
 
     // setup timer/counter 0 for pwm
-    TCCR0B = (1 << CS00);  // internal clock source, no scaling
-    // NOTE(bja, 2015-10) clk/8 is max scaling without visible blinking.
+    TCCR0B = set_bit_true(TCCR0B, CS00);  // internal clock source, no scaling
+    // NOTE(bja, 2015-10) clk/8 is max scaling without visible blinking at 1MHz.
     
-   TCCR0B = (1 << CS01);  // internal clock source, clk/8 scaling
-   TCCR0A = (1 << WGM00);  // PWM, phase correct, 8 bit
-   TCCR0A |= (1 << COM0A1);  // Clear OC0A on Compare Match
+    TCCR0B = set_bit_true(TCCR0B, CS01);  // internal clock source, clk/8 scaling
+    TCCR0A = set_bit_true(TCCR0A, WGM00);  // PWM, phase correct, 8 bit
+    TCCR0A |= set_bit_true(TCCR0A, COM0A1);  // Clear OC0A on Compare Match
    
-   // initial PWM pulse width
-   OCR0A  = 0xFF;
+    // initial PWM pulse width
+    OCR0A = 0xFF;
 
     PORTB = turn_led_off(PORTB);  // led off
 } // end led_init()
