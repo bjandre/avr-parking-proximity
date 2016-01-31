@@ -24,13 +24,13 @@ read-elf : $(ELF)
 # Generic rule to generate objects
 #
 %.o : %.c 
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 
 all : $(HEX)
 
 $(ELF) :$(OBJS)
-	$(CC) -o $@ $(OBJS)
+	$(CC)  $(CFLAGS) -o $@ $(OBJS)
 
 $(HEX) : $(ELF)
 	rm -f $(HEX)
