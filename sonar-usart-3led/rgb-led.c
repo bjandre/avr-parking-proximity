@@ -54,3 +54,10 @@ char set_led_blue(char current) {
     current = set_bit_false(current, LED_BLUE_PIN);
     return current;
 }
+
+char set_led_white(char current) {
+    current = set_bit_false(current, LED_RED_PIN);
+    current = set_bit_false(current, LED_GREEN_PIN);
+    current = set_bit_false(current, LED_BLUE_PIN);
+    return current;
+}

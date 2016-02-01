@@ -34,6 +34,7 @@ char get_led_switch_status(char current);
 char set_led_red(char current);
 char set_led_blue(char current);
 char set_led_green(char current);
+char set_led_white(char current);
 
 
 #endif     /* RGB_LED_H_ */
