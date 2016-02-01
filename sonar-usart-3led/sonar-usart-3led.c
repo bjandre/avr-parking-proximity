@@ -32,9 +32,13 @@
 #include "sonar-usart-3led.h"
 // relies on led pin macros defined in the sonar-usart-3led.h
 #include "rgb-led.h"
+#include "sonar-string.h"
 
 #define delay1 250.0
 #define delay2 6500.0
+
+
+uint16_t sonar_range;
 
 void usart_init(void);
 void led_pwm_init(void);
@@ -45,25 +49,34 @@ int main(void) {
     usart_init();
     led_pwm_init();
     cycle_led();
-    
-    sei(); // enable global interupts
-    
+    sonar_string_init();
+    // initialize the string just to be safe
+    uint16_t sonar_range;
+    sonar_string_as_int(&sonar_range);
+
+    // intial state of led
+    OCR0A = 0xff;
     PORTB = set_led_red(PORTB);
     PORTB = turn_led_on(PORTB);
-    _delay_ms(delay1);
-    OCR0A = 0x00;
+    //_delay_ms(delay1);
+
+    
+
+    // finished initialization, now we can enable global interupts
+    sei();
+
     for(;;) {
 
-        // change PWM pulse width every 2 seconds, note 8-bit pwm!
-        /* PORTB = set_led_blue(PORTB); */
-        /* OCR0A = 0x40; */
-        /* _delay_ms(delay2); */
-        /* PORTB = set_led_green(PORTB); */
-        /* OCR0A = 0xA0; */
-        /* _delay_ms(delay2); */
-        //        PORTB = set_led_red(PORTB);
-        OCR0A += 0x01;
-        _delay_ms(delay1);
+        if (sonar_range < 30) {
+            PORTB = set_led_red(PORTB);
+        } else if (sonar_range > 200) {
+            PORTB = set_led_blue(PORTB);
+        } else {
+            PORTB = set_led_green(PORTB);
+        }
+        // change PWM pulse width 
+        //OCR0A += 0x01;
+        //_delay_ms(delay1);
     }
   
     return 0;
@@ -103,8 +116,9 @@ void usart_init(void) {
 
 
 ISR(USART_RX_vect, ISR_BLOCK) {
-    char received_byte;
-    received_byte = UDR;
+    sonar_string_add_char(UDR);
+    sonar_string_as_int(&sonar_range);
+    cycle_led();
 }
 
 void led_pwm_init(void) {

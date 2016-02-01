@@ -26,6 +26,16 @@ TEST_RGB_LED_OBJS = \
 TEST_RGB_LED_EXE = \
 	test-rgb-led
 
+TEST_SONAR_STRING_SRCS = \
+	sonar-string.c \
+	test-sonar-string.c
+
+TEST_SONAR_STRING_OBJS = \
+	$(TEST_SONAR_STRING_SRCS:%.c=%.o)
+
+TEST_SONAR_STRING_EXE = \
+	test-sonar-string
+
 CMOCKA_INCLUDE_DIR=../3rd-party/build-Debug/include
 CMOCKA_LIBRARY=../3rd-party/build-Debug/lib/libcmocka.a
 
@@ -46,10 +56,15 @@ test-bit-ops : $(TEST_BIT_OPS_OBJS)
 test-rgb-led : $(TEST_RGB_LED_OBJS)
 	$(CC) $(CMOCKA_LIBRARY) $(TEST_RGB_LED_OBJS) -o $@
 
-test : $(TEST_BIT_OPS_EXE) $(TEST_RGB_LED_EXE)
+test-sonar-string : $(TEST_SONAR_STRING_OBJS)
+	$(CC) $(CMOCKA_LIBRARY) $(TEST_SONAR_STRING_OBJS) -o $@
+
+test : $(TEST_BIT_OPS_EXE) $(TEST_RGB_LED_EXE)  $(TEST_SONAR_STRING_EXE)
+
 	./test-bit-ops
 	./test-rgb-led
+	./test-sonar-string
 
 clean :
-	rm -rf *~ *.o lfuse.hex hfuse.hex efuse.hex $(HEX) $(ELF) $(TEST_BIT_OPS_EXE) $(TEST_RGB_LED_EXE)
+	rm -rf *~ *.o lfuse.hex hfuse.hex efuse.hex $(HEX) $(ELF) $(TEST_BIT_OPS_EXE) $(TEST_RGB_LED_EXE) $(TEST_SONAR_STRING_EXE)
 

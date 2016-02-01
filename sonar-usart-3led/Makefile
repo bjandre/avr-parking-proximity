@@ -6,6 +6,7 @@ ELF = sonar-usart-3led.elf
 SRCS = \
 	bit-ops.c \
 	rgb-led.c \
+	sonar-string.c \
 	sonar-usart-3led.c
 
 OBJS = \
