@@ -50,15 +50,15 @@ int main(void) {
     led_pwm_init();
     cycle_led();
     sonar_string_init();
+    
     // initialize the string just to be safe
-    uint16_t sonar_range;
-    sonar_string_as_int(&sonar_range);
+    sonar_range = sonar_string_as_int(sonar_range);
 
     // intial state of led
     OCR0A = 0xff;
-    PORTB = set_led_red(PORTB);
+    PORTB = set_led_white(PORTB);
     PORTB = turn_led_on(PORTB);
-    //_delay_ms(delay1);
+    _delay_ms(delay1);
 
     
 
@@ -69,7 +69,7 @@ int main(void) {
 
         if (sonar_range < 30) {
             PORTB = set_led_red(PORTB);
-        } else if (sonar_range > 200) {
+        } else if (sonar_range > 60) {
             PORTB = set_led_blue(PORTB);
         } else {
             PORTB = set_led_green(PORTB);
@@ -116,9 +116,10 @@ void usart_init(void) {
 
 
 ISR(USART_RX_vect, ISR_BLOCK) {
-    sonar_string_add_char(UDR);
-    sonar_string_as_int(&sonar_range);
-    cycle_led();
+    uint8_t received_byte = UDR;
+    sonar_string_add_char(received_byte);
+    sonar_range = sonar_string_as_int(sonar_range);
+    sei();
 }
 
 void led_pwm_init(void) {

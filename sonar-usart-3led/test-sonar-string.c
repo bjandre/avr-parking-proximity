@@ -20,32 +20,114 @@
 #include "sonar-string.h"
 
 static void test_sonar_string_init(void **state) {
-    uint16_t expected = 0;
+    // Test that the string is initialized correctly and the integer
+    // conversion is correct.
+    uint16_t expected = 123;
+    uint16_t current = 999;
+    uint16_t received;
     sonar_string_init();
-    sonar_string_as_int(&expected);
-    assert_int_equal(expected, 123);
+    received = sonar_string_as_int(current);
+    assert_int_equal(received, expected);
 }
 
 static void test_sonar_string_full_write(void **state) {
-    uint16_t expected = 123;
+    // Test that a full write cycle returns the corrent value.
+    uint16_t expected = 210;
+    uint16_t initial = 123;
+    uint16_t current = 123;
+    uint16_t final;
     sonar_string_init();
+    current = sonar_string_as_int(initial);
+    assert_int_equal(current, initial);
+    
     sonar_string_add_char('R');
+    current = sonar_string_as_int(current);
+    assert_int_equal(current, initial);
+
     sonar_string_add_char('2');
+    current = sonar_string_as_int(current);
+    assert_int_equal(current, initial);
+
     sonar_string_add_char('1');
+    current = sonar_string_as_int(current);
+    assert_int_equal(current, initial);
+
     sonar_string_add_char('0');
+    current = sonar_string_as_int(current);
+    assert_int_equal(current, initial);
+
     sonar_string_add_char('\r');
-    sonar_string_as_int(&expected);
-    assert_int_equal(expected, 210);
+    final = sonar_string_as_int(current);
+    assert_int_equal(final, expected);
 }
 
 static void test_sonar_string_partial_write(void **state) {
+    // Test that the integer range value doesn't update during the
+    // intermediate steps..
     uint16_t expected = 123;
+    uint16_t current = 123;
+    uint16_t received;
     sonar_string_init();
+
     sonar_string_add_char('R');
+    received = sonar_string_as_int(current);
+    assert_int_equal(received, expected);
+
     sonar_string_add_char('0');
+    received = sonar_string_as_int(current);
+    assert_int_equal(received, expected);
+
     sonar_string_add_char('3');
-    sonar_string_as_int(&expected);
-    assert_int_equal(expected, 123);
+    received = sonar_string_as_int(current);
+    assert_int_equal(received, expected);
+}
+
+static void test_sonar_string_missed_write(void **state) {
+    // Test that the integer value does not update if an intermediate
+    // update is missed and the string range starts over.
+    uint16_t initial = 123;
+    uint16_t expected = 135;
+    uint16_t final;
+    uint16_t current;
+    sonar_string_init();
+    current = sonar_string_as_int(initial);
+    assert_int_equal(current, initial);
+
+    sonar_string_add_char('R');
+    current = sonar_string_as_int(current);
+    assert_int_equal(current, initial);
+
+    sonar_string_add_char('0');
+    current = sonar_string_as_int(current);
+    assert_int_equal(current, initial);
+
+    sonar_string_add_char('3');
+    current = sonar_string_as_int(current);
+    assert_int_equal(current, initial);
+
+    sonar_string_add_char('\r');
+    current = sonar_string_as_int(current);
+    assert_int_equal(current, initial);
+
+    sonar_string_add_char('R');
+    current = sonar_string_as_int(current);
+    assert_int_equal(current, initial);
+
+    sonar_string_add_char('1');
+    current = sonar_string_as_int(current);
+    assert_int_equal(current, initial);
+
+    sonar_string_add_char('3');
+    current = sonar_string_as_int(current);
+    assert_int_equal(current, initial);
+
+    sonar_string_add_char('5');
+    current = sonar_string_as_int(current);
+    assert_int_equal(current, initial);
+
+    sonar_string_add_char('\r');
+    final = sonar_string_as_int(current);
+    assert_int_equal(final, expected);
 }
 
 
@@ -55,6 +137,7 @@ int main(int argc, char** argv) {
         cmocka_unit_test(test_sonar_string_init),
         cmocka_unit_test(test_sonar_string_full_write),
         cmocka_unit_test(test_sonar_string_partial_write),
+        cmocka_unit_test(test_sonar_string_missed_write),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

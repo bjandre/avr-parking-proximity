@@ -23,6 +23,6 @@
 
 void sonar_string_init(void);
 void sonar_string_add_char(uint8_t next_char);
-void sonar_string_as_int(uint16_t *sonar_string);
+uint16_t sonar_string_as_int(uint16_t sonar_string);
 
 #endif     /* SONAR_STRING_TO_INT_H_ */

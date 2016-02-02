@@ -43,8 +43,13 @@ void sonar_string_add_char(uint8_t next_char) {
     sonar_string_index++;
 }
 
-void sonar_string_as_int(uint16_t *sonar_range) {
+uint16_t sonar_string_as_int(uint16_t old_range) {
+    uint16_t new_range = old_range;
     if (sonar_string_index == sonar_string_length) {
-        *sonar_range = atoi(sonar_string + 1);
+        // last character written should be carriage returnt to assure
+        // that a full string was read....
+        assert(sonar_string[sonar_string_index-1] == '\r');
+        new_range = atoi(sonar_string + 1);
     }
+    return new_range;
 }
