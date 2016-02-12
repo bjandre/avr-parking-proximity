@@ -20,10 +20,8 @@
 //
 // pins
 //
-#define LED_RED_PIN PB3
-#define LED_ANODE_PIN PB2
-#define LED_BLUE_PIN PB1
-#define LED_GREEN_PIN PB0
+
+// led pins defined in rgb-led.h
 
 #define USART_RX_PIN PD0
 

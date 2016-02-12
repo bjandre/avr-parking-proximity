@@ -17,6 +17,8 @@ CFLAGS = -std=c11 -Wall -Os -DNDEBUG
 CFLAGS += -mmcu=$(CHIP)
 # NOTE(bja, 2015-01) Set -DF_CPU=N to clock speed in individual
 # makefiles so it can vary as needed.
+AR = avr-ar
+ARFLAGS = -rvs 
 
 PROGRAMMER = usbtiny
 AVRDUDE = avrdude

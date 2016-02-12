@@ -30,7 +30,6 @@
 
 // define common macro definitions
 #include "sonar-usart-3led.h"
-// relies on led pin macros defined in the sonar-usart-3led.h
 #include "rgb-led.h"
 #include "sonar-string.h"
 

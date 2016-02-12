@@ -1,5 +1,10 @@
 # -*- mode: Makefile -*-
+current_makefile = $(word $(words $(MAKEFILE_LIST)), $(MAKEFILE_LIST))
+makefile_name := $(current_makefile)
+
 include ../Makefile.inc
+
+SUBDIRS = ../utils
 
 HEADERS = \
 	bit-ops.h \
@@ -42,7 +47,21 @@ CMOCKA_LIBRARY=../3rd-party/build-Debug/lib/libcmocka.a
 CC = cc
 CFLAGS = -std=c11 -g -I$(CMOCKA_INCLUDE_DIR)
 
-all : test
+# MAKECMDGOALS is the make option: make 'clobber' or 'all'
+TARGET = $(MAKECMDGOALS)
+
+#
+# macro for executing TARGET in all SUBDIRS
+#
+ifdef SUBDIRS
+$(SUBDIRS) : FORCE
+	@if [ -d $@ ]; then \
+		$(MAKE) --file $(makefile_name) --directory=$@ $(TARGET); \
+	fi	
+endif	
+	@echo Build complete: $@ : $(shell date)
+
+all : $(SUBDIRS)
 
 #
 # Generic rule to generate objects
@@ -50,21 +69,12 @@ all : test
 %.o : %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-test-bit-ops : $(TEST_BIT_OPS_OBJS)
-	$(CC) $(CMOCKA_LIBRARY) $(TEST_BIT_OPS_OBJS) -o $@
-
-test-rgb-led : $(TEST_RGB_LED_OBJS)
-	$(CC) $(CMOCKA_LIBRARY) $(TEST_RGB_LED_OBJS) -o $@
-
 test-sonar-string : $(TEST_SONAR_STRING_OBJS)
 	$(CC) $(CMOCKA_LIBRARY) $(TEST_SONAR_STRING_OBJS) -o $@
 
-test : $(TEST_BIT_OPS_EXE) $(TEST_RGB_LED_EXE)  $(TEST_SONAR_STRING_EXE)
-
-	./test-bit-ops
-	./test-rgb-led
+test : $(SUBDIRS) $(TEST_SONAR_STRING_EXE)
 	./test-sonar-string
 
-clean :
-	rm -rf *~ *.o lfuse.hex hfuse.hex efuse.hex $(HEX) $(ELF) $(TEST_BIT_OPS_EXE) $(TEST_RGB_LED_EXE) $(TEST_SONAR_STRING_EXE)
+clean : $(SUBDIRS)
+	rm -rf *~ *.o lfuse.hex hfuse.hex efuse.hex $(HEX) $(ELF) $(TEST_SONAR_STRING_EXE)
 

@@ -17,9 +17,6 @@
 // goes low, allowing current through. off when high.  Individual pins
 // of LED are defined by the macros LED_RED_PIN, LED_BLUE_PIN,
 // LED_GREEN_PIN
-#ifdef __AVR_ARCH__
-#  include "sonar-usart-3led.h"
-#endif
 
 #include "bit-ops.h"
 #include "rgb-led.h"

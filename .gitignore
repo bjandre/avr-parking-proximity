@@ -5,6 +5,7 @@
 *.o
 *.elf
 *.hex
+*.a
 
 # kicad files
 *.bak

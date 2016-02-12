@@ -19,7 +19,15 @@
 #ifndef RGB_LED_H_
 #define RGB_LED_H_
 
-#ifndef LED_ANODE_PIN
+#ifdef __AVR_ARCH__
+#  include <avr/io.h>
+   // pins on board
+#  define LED_RED_PIN PB3
+#  define LED_ANODE_PIN PB2
+#  define LED_BLUE_PIN PB1
+#  define LED_GREEN_PIN PB0
+#else
+   // mock values for unit testing
 #  define LED_ANODE_PIN 0
 #  define LED_RED_PIN 1
 #  define LED_BLUE_PIN 2
