@@ -1,5 +1,5 @@
 EESchema Schematic File Version 2
-LIBS:sonar-usart-3led-rescue
+LIBS:sonar-pwm-3led-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -30,7 +30,7 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:lv-maxsonar-ez1
-LIBS:sonar-usart-3led-cache
+LIBS:sonar-pwm-3led-cache
 EELAYER 25 0
 EELAYER END
 $Descr USLetter 11000 8500
@@ -100,15 +100,17 @@ F 3 "" H 5550 2450 30  0000 C CNN
 	1    5550 2450
 	0    -1   -1   0   
 $EndComp
-NoConn ~ 4750 3100
+Connection ~ 6450 2250
 NoConn ~ 4750 3000
 NoConn ~ 4750 2900
 NoConn ~ 4750 2800
 NoConn ~ 4750 2700
 NoConn ~ 4750 2600
+NoConn ~ 4750 2500
 NoConn ~ 4750 2300
 NoConn ~ 4750 2200
 NoConn ~ 4750 2100
+NoConn ~ 4750 2000
 NoConn ~ 2450 2100
 NoConn ~ 2450 1900
 NoConn ~ 2450 1600
@@ -134,6 +136,12 @@ F 3 "" H 3900 1050 60  0000 C CNN
 	1    3900 1050
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	3600 3400 5100 3400
+Wire Wire Line
+	3800 3400 3800 3500
+Wire Wire Line
+	3800 3500 4050 3500
 $Comp
 L GND #PWR03
 U 1 1 5633A646
@@ -145,26 +153,6 @@ F 3 "" H 4050 3500 60  0000 C CNN
 	1    4050 3500
 	1    0    0    -1  
 $EndComp
-$Comp
-L LV-MaxSonar-EZ1 U?
-U 1 1 56462BB2
-P 5300 4550
-F 0 "U?" H 5300 4550 60  0000 C CNN
-F 1 "LV-MaxSonar-EZ1" H 5300 4550 60  0000 C CNN
-F 2 "" H 5300 4550 60  0000 C CNN
-F 3 "" H 5300 4550 60  0000 C CNN
-	1    5300 4550
-	1    0    0    -1  
-$EndComp
-NoConn ~ 5200 4250
-NoConn ~ 5200 4350
-Connection ~ 6450 2250
-Wire Wire Line
-	3600 3400 5100 3400
-Wire Wire Line
-	3800 3400 3800 3500
-Wire Wire Line
-	3800 3500 4050 3500
 Wire Wire Line
 	5700 2050 5850 2050
 Wire Wire Line
@@ -195,6 +183,17 @@ Wire Wire Line
 	1850 1300 3900 1300
 Wire Wire Line
 	3900 1300 3900 1050
+$Comp
+L LV-MaxSonar-EZ1-RESCUE-sonar-pwm-3led U?
+U 1 1 56462BB2
+P 5300 4550
+F 0 "U?" H 5300 4550 60  0000 C CNN
+F 1 "LV-MaxSonar-EZ1" H 5300 4550 60  0000 C CNN
+F 2 "" H 5300 4550 60  0000 C CNN
+F 3 "" H 5300 4550 60  0000 C CNN
+	1    5300 4550
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
 	5100 3400 5100 3850
 Wire Wire Line
@@ -205,92 +204,14 @@ Wire Wire Line
 Wire Wire Line
 	1850 3950 5200 3950
 Connection ~ 3600 1300
+NoConn ~ 5200 4450
+NoConn ~ 5200 4250
+NoConn ~ 5200 4050
+NoConn ~ 5200 4150
 Wire Wire Line
-	5200 4450 4700 4450
+	5200 4350 4900 4350
 Wire Wire Line
-	4700 4450 4700 3400
-Connection ~ 4700 3400
-$Comp
-L PN2222A Q?
-U 1 1 56C25F47
-P 3650 4800
-F 0 "Q?" H 3850 4875 50  0000 L CNN
-F 1 "PN2222A" H 3850 4800 50  0000 L CNN
-F 2 "TO-92" H 3850 4725 50  0000 L CIN
-F 3 "" H 3650 4800 50  0000 L CNN
-	1    3650 4800
-	1    0    0    -1  
-$EndComp
-$Comp
-L R R?
-U 1 1 56C26029
-P 3750 4250
-F 0 "R?" V 3830 4250 50  0000 C CNN
-F 1 "R 10 kOhm" V 3650 4250 50  0000 C CNN
-F 2 "" V 3680 4250 30  0000 C CNN
-F 3 "" H 3750 4250 30  0000 C CNN
-	1    3750 4250
-	1    0    0    -1  
-$EndComp
-$Comp
-L R R?
-U 1 1 56C26271
-P 3000 4800
-F 0 "R?" V 3080 4800 50  0000 C CNN
-F 1 "R 10 kOhm" V 2900 4800 50  0000 C CNN
-F 2 "" V 2930 4800 30  0000 C CNN
-F 3 "" H 3000 4800 30  0000 C CNN
-	1    3000 4800
-	0    1    1    0   
-$EndComp
-$Comp
-L R R?
-U 1 1 56C262D8
-P 3300 5150
-F 0 "R?" V 3380 5150 50  0000 C CNN
-F 1 "R 10 kOhm" V 3200 5150 50  0000 C CNN
-F 2 "" V 3230 5150 30  0000 C CNN
-F 3 "" H 3300 5150 30  0000 C CNN
-	1    3300 5150
-	1    0    0    -1  
-$EndComp
+	4900 4350 4900 3100
 Wire Wire Line
-	3450 4800 3150 4800
-Wire Wire Line
-	3300 5000 3300 4800
-Connection ~ 3300 4800
-$Comp
-L Earth #PWR?
-U 1 1 56C2650C
-P 3500 5400
-F 0 "#PWR?" H 3500 5150 50  0001 C CNN
-F 1 "Earth" H 3500 5250 50  0001 C CNN
-F 2 "" H 3500 5400 60  0000 C CNN
-F 3 "" H 3500 5400 60  0000 C CNN
-	1    3500 5400
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	3750 5400 3750 5000
-Wire Wire Line
-	3300 5400 3750 5400
-Wire Wire Line
-	3300 5300 3300 5400
-Connection ~ 3500 5400
-Wire Wire Line
-	3750 4100 3750 3950
-Connection ~ 3750 3950
-Wire Wire Line
-	3750 4600 3750 4400
-Wire Wire Line
-	5200 4050 2850 4050
-Wire Wire Line
-	2850 4050 2850 4800
-Wire Wire Line
-	3750 4500 4900 4500
-Wire Wire Line
-	4900 4500 4900 2500
-Wire Wire Line
-	4900 2500 4750 2500
-Connection ~ 3750 4500
+	4900 3100 4750 3100
 $EndSCHEMATC
