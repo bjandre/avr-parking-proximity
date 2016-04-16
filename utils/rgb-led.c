@@ -18,43 +18,40 @@
 // of LED are defined by the macros LED_RED_PIN, LED_BLUE_PIN,
 // LED_GREEN_PIN
 
+#include <inttypes.h>
+
 #include "bit-ops.h"
 #include "rgb-led.h"
 
 // led anode pin set to high, 1, for led on. low, 0, to led off
-char turn_led_on(char current) {
-    return set_bit_true(current, LED_ANODE_PIN);
+void turn_led_on(volatile uint8_t *buffer) {
+    set_bit_true(buffer, LED_ANODE_PIN);
 }
 
-char turn_led_off(char current) {
-    return set_bit_false(current, LED_ANODE_PIN);
+void turn_led_off(volatile uint8_t *buffer) {
+    set_bit_false(buffer, LED_ANODE_PIN);
 }
 
 // led cathode pins are low for on, high for off
-char set_led_red(char current) {
-    current = set_bit_false(current, LED_RED_PIN);
-    current = set_bit_true(current, LED_GREEN_PIN);
-    current = set_bit_true(current, LED_BLUE_PIN);
-    return current;
+void set_led_red(volatile uint8_t *buffer) {
+    set_bit_false(buffer, LED_RED_PIN);
+    set_bit_true(buffer, LED_GREEN_PIN);
+    set_bit_true(buffer, LED_BLUE_PIN);
 }
 
-
-char set_led_green(char current) {
-    current = set_bit_true(current, LED_RED_PIN);
-    current = set_bit_false(current, LED_GREEN_PIN);
-    current = set_bit_true(current, LED_BLUE_PIN);
-    return current;
+void set_led_green(volatile uint8_t *buffer) {
+    set_bit_true(buffer, LED_RED_PIN);
+    set_bit_false(buffer, LED_GREEN_PIN);
+    set_bit_true(buffer, LED_BLUE_PIN);
 }
-char set_led_blue(char current) {
-    current = set_bit_true(current, LED_RED_PIN);
-    current = set_bit_true(current, LED_GREEN_PIN);
-    current = set_bit_false(current, LED_BLUE_PIN);
-    return current;
+void set_led_blue(volatile uint8_t *buffer) {
+    set_bit_true(buffer, LED_RED_PIN);
+    set_bit_true(buffer, LED_GREEN_PIN);
+    set_bit_false(buffer, LED_BLUE_PIN);
 }
 
-char set_led_white(char current) {
-    current = set_bit_false(current, LED_RED_PIN);
-    current = set_bit_false(current, LED_GREEN_PIN);
-    current = set_bit_false(current, LED_BLUE_PIN);
-    return current;
+void set_led_white(volatile uint8_t *buffer) {
+    set_bit_false(buffer, LED_RED_PIN);
+    set_bit_false(buffer, LED_GREEN_PIN);
+    set_bit_false(buffer, LED_BLUE_PIN);
 }

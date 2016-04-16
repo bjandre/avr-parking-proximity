@@ -6,16 +6,6 @@ include ../Makefile.inc
 
 SUBDIRS = ../utils
 
-TEST_SONAR_STRING_SRCS = \
-	sonar-string.c \
-	test-sonar-string.c
-
-TEST_SONAR_STRING_OBJS = \
-	$(TEST_SONAR_STRING_SRCS:%.c=%.o)
-
-TEST_SONAR_STRING_EXE = \
-	test-sonar-string
-
 CMOCKA_INCLUDE_DIR=../3rd-party/build-Debug/include
 CMOCKA_LIBRARY=../3rd-party/build-Debug/lib/libcmocka.a
 
@@ -44,11 +34,8 @@ all : $(SUBDIRS)
 %.o : %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-test-sonar-string : $(TEST_SONAR_STRING_OBJS)
-	$(CC) $(CMOCKA_LIBRARY) $(TEST_SONAR_STRING_OBJS) -o $@
+test : $(SUBDIRS) 
 
-test : $(SUBDIRS) $(TEST_SONAR_STRING_EXE)
-	./test-sonar-string
 
 clean : $(SUBDIRS)
 	rm -rf *~ *.o lfuse.hex hfuse.hex efuse.hex $(HEX) $(ELF) $(TEST_SONAR_STRING_EXE)

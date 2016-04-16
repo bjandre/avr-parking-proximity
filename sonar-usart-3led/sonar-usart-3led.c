@@ -55,8 +55,8 @@ int main(void) {
 
     // intial state of led
     OCR0A = 0xff;
-    PORTB = set_led_white(PORTB);
-    PORTB = turn_led_on(PORTB);
+    set_led_white(&PORTB);
+    turn_led_on(&PORTB);
     _delay_ms(delay1);
 
     
@@ -67,11 +67,11 @@ int main(void) {
     for(;;) {
 
         if (sonar_range < 30) {
-            PORTB = set_led_red(PORTB);
+            set_led_red(&PORTB);
         } else if (sonar_range > 60) {
-            PORTB = set_led_blue(PORTB);
+            set_led_blue(&PORTB);
         } else {
-            PORTB = set_led_green(PORTB);
+            set_led_green(&PORTB);
         }
         // change PWM pulse width 
         //OCR0A += 0x01;
@@ -92,21 +92,21 @@ void usart_init(void) {
     //   * one stop bit
 
     // RX receiver enabled
-    UCSRB |= set_bit_true(UCSRB, RXEN);
+    set_bit_true(&UCSRB, RXEN);
     // RX complete interrupt enable
-    UCSRB |= set_bit_true(UCSRB, RXCIE);
+    set_bit_true(&UCSRB, RXCIE);
 
     // asynchronous mode
-    UCSRC |= set_bit_true(UCSRC, UMSEL);
+    set_bit_true(&UCSRC, UMSEL);
     // no parity
-    UCSRC |= set_bit_true(UCSRC, UPM0);
-    UCSRC |= set_bit_false(UCSRC, UPM1);
+    set_bit_true(&UCSRC, UPM0);
+    set_bit_false(&UCSRC, UPM1);
     // one stop bit
-    UCSRC |= set_bit_false(UCSRC, USBS);
+    set_bit_false(&UCSRC, USBS);
     // USART 8 bit characters:
-    UCSRC |= set_bit_true(UCSRC, UCSZ0);
-    UCSRC |= set_bit_true(UCSRC, UCSZ1);
-    UCSRB |= set_bit_false(UCSRB, UCSZ2);
+    set_bit_true(&UCSRC, UCSZ0);
+    set_bit_true(&UCSRC, UCSZ1);
+    set_bit_false(&UCSRB, UCSZ2);
     // 9600 baud, set by util/setbaud macros
     UBRRH = UBRRH_VALUE;
     UBRRL = UBRRL_VALUE;
@@ -125,35 +125,35 @@ void led_pwm_init(void) {
     // set output pins for led and pwm signal
     // set pins for port b0=G, b1=B, b2=A, b3=R to output
     DDRB = 0;
-    DDRB |= set_bit_true(DDRB, LED_RED_PIN);
-    DDRB |= set_bit_true(DDRB, LED_ANODE_PIN);
-    DDRB |= set_bit_true(DDRB, LED_BLUE_PIN);
-    DDRB |= set_bit_true(DDRB, LED_GREEN_PIN);
+    set_bit_true(&DDRB, LED_RED_PIN);
+    set_bit_true(&DDRB, LED_ANODE_PIN);
+    set_bit_true(&DDRB, LED_BLUE_PIN);
+    set_bit_true(&DDRB, LED_GREEN_PIN);
 
     // setup timer/counter 0 for pwm
-    TCCR0B = set_bit_true(TCCR0B, CS00);  // internal clock source, no scaling
+    set_bit_true(&TCCR0B, CS00);  // internal clock source, no scaling
     // NOTE(bja, 2015-10) clk/8 is max scaling without visible blinking at 1MHz.
     
-    TCCR0B = set_bit_true(TCCR0B, CS01);  // internal clock source, clk/8 scaling
-    TCCR0A = set_bit_true(TCCR0A, WGM00);  // PWM, phase correct, 8 bit
-    TCCR0A |= set_bit_true(TCCR0A, COM0A1);  // Clear OC0A on Compare Match
+    set_bit_true(&TCCR0B, CS01);  // internal clock source, clk/8 scaling
+    set_bit_true(&TCCR0A, WGM00);  // PWM, phase correct, 8 bit
+    set_bit_true(&TCCR0A, COM0A1);  // Clear OC0A on Compare Match
    
     // initial PWM pulse width
     OCR0A = 0xFF;
 
-    PORTB = turn_led_off(PORTB);  // led off
+    turn_led_off(&PORTB);  // led off
 } // end led_init()
 
 
 void cycle_led(void) {
-    PORTB = turn_led_on(PORTB);
+    turn_led_on(&PORTB);
     _delay_ms(delay1);
-    PORTB = set_led_red(PORTB);
+    set_led_red(&PORTB);
     _delay_ms(delay1);
-    PORTB = set_led_blue(PORTB);
+    set_led_blue(&PORTB);
     _delay_ms(delay1);
-    PORTB = set_led_green(PORTB);
+    set_led_green(&PORTB);
     _delay_ms(delay1);
-    PORTB = turn_led_off(PORTB);
+    turn_led_off(&PORTB);
     _delay_ms(delay1);
 }

@@ -1,3 +1,4 @@
+
 // -*- mode: c; c-default-style: "k&r"; c-basic-offset: 4; indent-tabs-mode: nil; tab-width: 4 -*-
 
 //
@@ -15,6 +16,8 @@
 #ifndef BIT_OPS_H_
 #define BIT_OPS_H_
 
+#include <inttypes.h>
+
 //    printf("mask = %s\n", byte_to_binary_string(mask));
 //    printf("current = %s\n", byte_to_binary_string(current));    
 //    printf("received = %s\n", byte_to_binary_string(received));    
@@ -22,9 +25,9 @@
 #ifndef __AVR_ARCH__
     const char* byte_to_binary_string(char x);
 #endif
-char get_bit(char current, int position);
-char set_bit_true(char byte, char bit_num);
-char set_bit_false(char byte, char bit_num);
-char flip_bit(char byte, char bit_num);
+char get_bit(volatile uint8_t *current, int position);
+void set_bit_true(volatile uint8_t *byte, char bit_num);
+void set_bit_false(volatile uint8_t *byte, char bit_num);
+void flip_bit(volatile uint8_t *byte, char bit_num);
 
 #endif     /* BIT_OPS_H_ */

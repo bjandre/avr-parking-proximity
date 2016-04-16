@@ -19,6 +19,8 @@
 #ifndef RGB_LED_H_
 #define RGB_LED_H_
 
+#include <inttypes.h>
+
 #ifdef __AVR_ARCH__
 #  include <avr/io.h>
    // pins on board
@@ -34,15 +36,15 @@
 #  define LED_GREEN_PIN 3
 #endif
 
-char turn_led_on(char current);
-char turn_led_off(char current);
+void turn_led_on(volatile uint8_t *buffer);
+void turn_led_off(volatile uint8_t *buffer);
 
-char get_led_switch_status(char current);
+uint8_t get_led_switch_status(volatile uint8_t *buffer);
 
-char set_led_red(char current);
-char set_led_blue(char current);
-char set_led_green(char current);
-char set_led_white(char current);
+void set_led_red(volatile uint8_t *buffer);
+void set_led_blue(volatile uint8_t *buffer);
+void set_led_green(volatile uint8_t *buffer);
+void set_led_white(volatile uint8_t *buffer);
 
 
 #endif     /* RGB_LED_H_ */

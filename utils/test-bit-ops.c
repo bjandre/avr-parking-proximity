@@ -8,6 +8,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // 
 
+#include <inttypes.h>
 #include <limits.h>
 
 #include <stdarg.h>
@@ -19,66 +20,66 @@
 #include "bit-ops.h"
 
 static void test_get_bit_on(void **state) {
-    char current = 0b00011101;
+    uint8_t current = 0b00011101;
     int position = 3;
-    char mask = get_bit(current, position);
+    uint8_t mask = get_bit(&current, position);
     assert_int_equal(mask, (1 << position));
 }
 
 static void test_get_bit_off(void **state) {
-    char current = 0b11110111;
+    uint8_t current = 0b11110111;
     int position = 3;
-    char mask = get_bit(current, position);
+    uint8_t mask = get_bit(&current, position);
     assert_int_equal(mask, 0b00000000);
 }
 
-static void test_set_bit_true_current_false(void **state) {
-    char current  = 0b10101101;
-    char expected = current;
+static void test_set_bit_true_current_true(void **state) {
+    uint8_t buffer  = 0b10101101;
+    uint8_t expected = buffer;
     int position = 3;
-    char received = set_bit_true(current, position);
-    assert_int_equal(expected, received);
+    set_bit_true(&buffer, position);
+    assert_int_equal(expected, buffer);
 }
 
-static void test_set_bit_true_current_true(void **state) {
-    char current  = 0b10101101;
-    char expected = 0b10111101;    
+static void test_set_bit_true_current_false(void **state) {
+    uint8_t buffer  = 0b10101101;
+    uint8_t expected = 0b10111101;    
     int position = 4;
-    char received = set_bit_true(current, position);
-    assert_int_equal(expected, received);
+    set_bit_true(&buffer, position);
+    assert_int_equal(expected, buffer);
 }
 
 static void test_set_bit_false_current_false(void **state) {
-    char current  = 0b10101101;
-    char expected = current;
+    uint8_t buffer  = 0b10101101;
+    uint8_t expected = buffer;
     int position = 4;
-    char received = set_bit_false(current, position);
-    assert_int_equal(expected, received);
+    set_bit_false(&buffer, position);
+    assert_int_equal(expected, buffer);
 }
 
 static void test_set_bit_false_current_true(void **state) {
-    char current  = 0b10101101;
-    char expected = 0b10100101;
+    uint8_t buffer  = 0b10101101;
+    uint8_t expected = 0b10100101;
     int position = 3;
-    char received = set_bit_false(current, position);
-    assert_int_equal(expected, received);
+    set_bit_false(&buffer, position);
+    assert_int_equal(expected, buffer);
 }
 
 
 static void test_flip_bit_current_true(void **state) {
-    char current  = 0b10101101;
-    char expected = 0b10100101;
+    uint8_t buffer  = 0b10101101;
+    uint8_t expected = 0b10100101;
     int position = 3;
-    char received = flip_bit(current, position);
-    assert_int_equal(expected, received);
+    flip_bit(&buffer, position);
+    assert_int_equal(expected, buffer);
 }
 
 static void test_flip_bit_current_false(void **state) {
-    char current  = 0b10100101;
-    char expected = 0b10101101;
+    uint8_t buffer  = 0b10100101;
+    uint8_t expected = 0b10101101;
     int position = 3;
-    char received = flip_bit(current, position);
-    assert_int_equal(expected, received);
+    flip_bit(&buffer, position);
+    assert_int_equal(expected, buffer);
 }
 
 

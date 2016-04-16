@@ -35,32 +35,29 @@
 /* } */
 /* #endif */
 
-char get_bit(char current, int position) {
+char get_bit(volatile uint8_t *current, int position) {
     assert(position < CHAR_BIT);
     char mask = 1 << position;
-    return mask & current;
+    return *current & mask;
 }
 
-char set_bit_true(char byte, char bit_num) {
+void set_bit_true(volatile uint8_t *byte, char bit_num) {
     /* char mask = (1 << bit_num); */
     /* return current | mask; */
     assert(bit_num < CHAR_BIT);
-    byte |= (1 << bit_num);
-    return byte;
+    *byte |= (1 << bit_num);
 }
 
-char set_bit_false(char byte, char bit_num) {
+void set_bit_false(volatile uint8_t *byte, char bit_num) {
     /* char mask = ~current; */
     /* mask |= (1 << bit_num); */
     /* return ~mask; */
     assert(bit_num < CHAR_BIT);
-    byte &= ~(1 << bit_num);
-    return byte;
+    *byte &= ~(1 << bit_num);
 }
 
-char flip_bit(char byte, char bit_num) {
+void flip_bit(volatile uint8_t *byte, char bit_num) {
     assert(bit_num < CHAR_BIT);
-    byte ^= ~(1 << bit_num);
-    byte = ~byte;
-    return byte;
+    *byte ^= ~(1 << bit_num);
+    *byte = ~(*byte);
 }
