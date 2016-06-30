@@ -140,7 +140,7 @@ Hardware USART is available on the ATTiny2313 pins:
   * RXC - bit 7 - USART receive complete - set to one when there is
     data in the receive buffer.
 
-  * TXC - bit 7 - USART transmit complete - set to one when transmit
+  * TXC - bit 6 - USART transmit complete - set to one when transmit
     shift register is empty and the transmit buffer is empty.
 
 

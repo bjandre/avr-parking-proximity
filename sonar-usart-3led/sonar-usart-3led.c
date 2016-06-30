@@ -36,6 +36,7 @@
 #define delay1 250.0
 #define delay2 6500.0
 
+#define DEBUG_SERIAL 1
 
 uint16_t sonar_range;
 
@@ -96,8 +97,10 @@ void usart_init(void) {
     // RX complete interrupt enable
     set_bit_true(&UCSRB, RXCIE);
 
+#if 0
     // asynchronous mode
     set_bit_true(&UCSRC, UMSEL);
+#endif
     // no parity
     set_bit_true(&UCSRC, UPM0);
     set_bit_false(&UCSRC, UPM1);
@@ -107,18 +110,29 @@ void usart_init(void) {
     set_bit_true(&UCSRC, UCSZ0);
     set_bit_true(&UCSRC, UCSZ1);
     set_bit_false(&UCSRB, UCSZ2);
+	    
     // 9600 baud, set by util/setbaud macros
     UBRRH = UBRRH_VALUE;
     UBRRL = UBRRL_VALUE;
+
+    if (DEBUG_SERIAL) {
+        // enable the transmitter for debugging
+        set_bit_true(&UCSRB, TXEN);
+    }
+
     
 } // end usart_init()
 
 
+// header avr/iotn2313.h contains processor specific info
 ISR(USART_RX_vect, ISR_BLOCK) {
     uint8_t received_byte = UDR;
+    if (DEBUG_SERIAL) {
+        // now echo out the received character
+        UDR = received_byte;
+    }
     sonar_string_add_char(received_byte);
     sonar_range = sonar_string_as_int(sonar_range);
-    sei();
 }
 
 void led_pwm_init(void) {
