@@ -25,14 +25,15 @@
 // ASCII digits representing range in inches, followed by carriage
 // return. C string 'R123\r'.
 
-#define MAXSONAR_STR_LEN 5
+#define MAXSONAR_STR_LEN 6
 static const uint8_t sonar_string_length = MAXSONAR_STR_LEN;
 static char sonar_string[MAXSONAR_STR_LEN];
 static uint8_t sonar_string_index;
 
 void sonar_string_init(void) {
-    strncpy(sonar_string, "R123\r", sonar_string_length);
-    sonar_string_index = sonar_string_length;
+    strncpy(sonar_string, "R123\r\0", sonar_string_length);
+    // NOTE(bja, 2016-05) set to last valid character for unit testing
+    sonar_string_index = sonar_string_length - 1;
 }
 
 void sonar_string_add_char(uint8_t next_char) {
@@ -45,10 +46,10 @@ void sonar_string_add_char(uint8_t next_char) {
 
 uint16_t sonar_string_as_int(uint16_t old_range) {
     uint16_t new_range = old_range;
-    if (sonar_string_index == sonar_string_length) {
-        // last character written should be carriage returnt to assure
+    if (sonar_string_index == sonar_string_length - 1) {
+        // last character written should be carriage return to assure
         // that a full string was read....
-        assert(sonar_string[sonar_string_index-1] == '\r');
+        //assert(sonar_string[sonar_string_index - 1] == '\r');
         new_range = atoi(sonar_string + 1);
     }
     return new_range;
