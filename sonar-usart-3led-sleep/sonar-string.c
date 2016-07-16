@@ -8,6 +8,10 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // 
 
+// NOTE(bja, 201607) this library is NOT async safe! All calls should
+// be done with interrupts disabled or from unthreaded regions!
+//
+
 // 
 // store the sonar data received from usart in a string buffer and
 // convert to an integer range value.

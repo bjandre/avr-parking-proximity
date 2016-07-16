@@ -41,9 +41,11 @@
 
 #define DEBUG_SERIAL 1
 
-uint8_t sonar_range; // [inches], integer range 0-254
-uint8_t sonar_range_previous; // inches
-static const uint8_t max_delta_range = 3; // inches
+typedef struct {
+    uint8_t sonar_range; // [inches], integer range 0-254
+} global_async_data_type;
+
+global_async_data_type async_data;
 
 void usart_init(void);
 void led_pwm_init(void);
@@ -53,40 +55,49 @@ void watchdog_init(uint8_t interval);
 void sonar_init();
 
 int main(void) {
+    cli(); // clear global interrupts for initialization
     watchdog_off();
+
     usart_init();
+
     led_pwm_init();
     cycle_led();
-    sonar_init();
-    sonar_string_init();
-    
-    // initialize the string just to be safe
-    sonar_range = sonar_string_as_int(sonar_range);
-    sonar_range_previous = sonar_range + max_delta_range + 1;
-
     // intial state of led
     OCR0A = 0xff;
     set_led_white(&PORTB);
     turn_led_on(&PORTB);
     _delay_ms(delay1);
 
+    sonar_init();
+    sonar_string_init();
+    // initialize the range integer
+    async_data.sonar_range = sonar_string_as_int(async_data.sonar_range);
+    // initialize local range data
+    static const uint8_t max_delta_range = 3; // [inches]
+    uint8_t sonar_range_previous; // [inches]
+    uint8_t sonar_range_current; // [inches]
+    sonar_range_previous = async_data.sonar_range + max_delta_range + 1;
+
     // watchdog_init(WDTO_1S);
     watchdog_init(WDTO_500MS);
     
+
     // finished initialization, now we can enable global interupts
     sei();
     
     for(;;) {
-
-        if (sonar_range < 30) {
+        cli();
+        sonar_range_current = async_data.sonar_range;
+        sei();
+        if (sonar_range_current < 30) {
             set_led_red(&PORTB);
-        } else if (sonar_range > 60) {
+        } else if (sonar_range_current > 60) {
             set_led_blue(&PORTB);
         } else {
             set_led_green(&PORTB);
         }
-        uint8_t delta_range = abs(sonar_range - sonar_range_previous);
-        sonar_range_previous = sonar_range;
+        uint8_t delta_range = abs(sonar_range_current - sonar_range_previous);
+        sonar_range_previous = sonar_range_current;
         if (delta_range <= max_delta_range) {
             // range not changing. Disable ranging and led to conserve
             // power then go to sleep.
@@ -153,7 +164,7 @@ ISR(USART_RX_vect, ISR_BLOCK) {
         UDR = received_byte;
     }
     sonar_string_add_char(received_byte);
-    sonar_range = sonar_string_as_int(sonar_range);
+    async_data.sonar_range = sonar_string_as_int(async_data.sonar_range);
 }
 
 void sonar_init(void) {

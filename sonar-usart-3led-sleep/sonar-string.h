@@ -7,9 +7,13 @@
 // License, v.  2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // 
+//
+// NOTE(bja, 201607) this library is NOT async safe! All calls should
+// be done with interrupts disabled or from unthreaded regions!
+//
 
 // 
-// convert sonar usart string to integer
+// manipulate sonar data, convert sonar usart string to integer
 //
 
 // Sonar usart output format: ASCII capital 'R' followed by three
