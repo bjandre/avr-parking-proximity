@@ -24,5 +24,6 @@
 // led pins defined in rgb-led.h
 
 #define USART_RX_PIN PD0
+#define SONAR_RANGING_PIN PB4
 
 #endif     /* SONAR_USART_3LED_SLEEP_H_ */

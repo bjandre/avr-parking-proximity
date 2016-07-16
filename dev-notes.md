@@ -105,8 +105,59 @@ silently switch to a low resolution 0.1ms timer, so the max is 6.5535
 sec.
 
 
-## watchdog timer - `<avr/wdt.h>` ##
+# watchdog timer - `<avr/wdt.h>` #
 
+The watchdog timer counts cycles on its own oscillator.
+
+* In system reset mode operation, it will trigger a system reset when
+it reaches a given value. The user must restart the counter to avoid a
+system reset. Useful for ensuring that the system will never hang for
+an extended time.
+
+* In interrupt mode the timer will trigger an interrupt when the timer
+expires. Can be used to wake from sleep mode or as a general timer.
+
+* In interrupt-reset mode, an interrupt will be triggered first, then
+  then switches to system reset mode. Can be used for safe shutdown to
+  save critical parameters before reset.
+
+* Changing the watchdog functionality or prescaler requires a timed
+  sequence of commands to be executed in four clock cycles!
+
+* WDTCSR - (W)atch(d)og (t)imer (c)ontrol (r)egister
+
+  * WDIF - bit 7 - watchdog interrupt flag - set by hardware when a
+    timeout occurs and interrupt mode is enabled. if global interrupts
+    are enabled, the corresponding interrupt will be executed. Cleared
+    by hardware when the interrupt is executed. Can be cleared
+    manually by writing a logical one.
+
+  * WDIE - bit 6 - watchdog interrupt enable - set to one and turn on
+    global interrupts to enable the watchdog interrupt.
+
+  * WDP3 - bit 5 - see WDP2 - WDP0
+
+  * WDCE - bit 4 - watchdog change enable - must be set to one inorder
+    to change the interrupt mode and prescaler. It is automatically
+    cleared to zero by the hardware after four clock cycles (for
+    security).
+
+  * WDE - bit 3 - watchdog system reset enable - trigger a system
+    reset when the watchdog timer triggers. This bit is overridden by
+    the WDRF bit in MCUSR. Must clear the bit in MCUSR to change this
+    bit. Ensures multiple resets during failure conditions and safe
+    startup.
+
+  * WDP{2,1,0} - bit 2, 1, 0 - watchdog prescaler. set WDP0-WDP3 to
+    control the prescaler.
+
+* Fuse High Byte - WDTON - bit 4 - watchdog timer is always on
+
+# system control and reset #
+
+* MCUSR - (mcu) (s)tatus (r)egister
+
+  * WDRF - bit 3 - watchdog reset flag - set as logical one
 
 # interrupts  - `<avr/interrupt.h>` #
 
