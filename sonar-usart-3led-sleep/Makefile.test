@@ -20,7 +20,7 @@ CMOCKA_INCLUDE_DIR=../3rd-party/build-Debug/include
 CMOCKA_LIBRARY=../3rd-party/build-Debug/lib/libcmocka.a
 
 CC = cc
-CFLAGS = -std=c11 -g -I$(CMOCKA_INCLUDE_DIR)
+CFLAGS = -std=c11 -Wall -g -I$(CMOCKA_INCLUDE_DIR)
 
 # MAKECMDGOALS is the make option: make 'clobber' or 'all'
 TARGET = $(MAKECMDGOALS)

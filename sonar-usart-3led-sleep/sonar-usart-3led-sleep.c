@@ -41,9 +41,9 @@
 
 #define DEBUG_SERIAL 1
 
-uint16_t sonar_range; // inches
-uint16_t sonar_range_previous; // inches
-static const uint16_t max_delta_range = 3; // inches
+uint8_t sonar_range; // [inches], integer range 0-254
+uint8_t sonar_range_previous; // inches
+static const uint8_t max_delta_range = 3; // inches
 
 void usart_init(void);
 void led_pwm_init(void);
@@ -85,7 +85,7 @@ int main(void) {
         } else {
             set_led_green(&PORTB);
         }
-        uint16_t delta_range = abs(sonar_range - sonar_range_previous);
+        uint8_t delta_range = abs(sonar_range - sonar_range_previous);
         sonar_range_previous = sonar_range;
         if (delta_range <= max_delta_range) {
             // range not changing. Disable ranging and led to conserve

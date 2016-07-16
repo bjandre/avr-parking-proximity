@@ -15,6 +15,8 @@
 // Sonar usart output format: ASCII capital 'R' followed by three
 // ASCII digits representing range in inches, followed by carriage
 // return. C string 'R123\r'.
+//
+// max integer value of range is 254 inches.
 
 #ifndef SONAR_STRING_TO_INT_H_
 #define SONAR_STRING_TO_INT_H_
@@ -23,6 +25,6 @@
 
 void sonar_string_init(void);
 void sonar_string_add_char(uint8_t next_char);
-uint16_t sonar_string_as_int(uint16_t sonar_string);
+uint8_t sonar_string_as_int(uint8_t sonar_string);
 
 #endif     /* SONAR_STRING_TO_INT_H_ */
