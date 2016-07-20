@@ -67,6 +67,10 @@ int main(void) {
         _delay_ms(delay2);
         PORTB = 0b00000100; // w
         OCR0A  = 0xFF;
+        _delay_ms(delay2);
+        PORTB = 0b00001011; // off
+        _delay_ms(delay2);
+        PORTB = 0b00000000; // off
     }
   
     return 0;

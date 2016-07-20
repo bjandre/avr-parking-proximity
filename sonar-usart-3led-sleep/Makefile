@@ -37,7 +37,7 @@ $(SUBDIRS) : FORCE
 endif	
 	@echo Build complete: $@ : $(shell date)
 
-all : $(SUBDIRS) $(HEX)
+all : $(SUBDIRS) ../utils/libbjaavr.a $(HEX)
 
 flash : all
 	$(AVRDUDE) $(AVRDUDEFLAGS) -U flash:w:$(HEX):i
@@ -54,7 +54,7 @@ read-elf : $(ELF)
 
 all : $(HEX)
 
-$(ELF) :$(OBJS)
+$(ELF) :$(OBJS) ../utils/libbjaavr.a
 	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
 $(HEX) : $(ELF)

@@ -24,7 +24,7 @@ read-elf : $(ELF)
 # Generic rule to generate objects
 #
 %.o : %.c 
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 
 all : $(HEX)

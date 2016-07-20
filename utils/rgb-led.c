@@ -30,6 +30,16 @@ void turn_led_on(volatile uint8_t *buffer) {
 
 void turn_led_off(volatile uint8_t *buffer) {
     set_bit_false(buffer, LED_ANODE_PIN);
+    set_bit_true(buffer, LED_RED_PIN);
+    set_bit_true(buffer, LED_GREEN_PIN);
+    set_bit_true(buffer, LED_BLUE_PIN);
+}
+
+void turn_off_led_anode(volatile uint8_t *buffer) {
+    // NOTE(bja, 201607) This preserves the led color state, but will
+    // only work if the anode pin is connected to a transistor. Logic
+    // level 0 on the anode pin can be > Vground, up to 2 or 3 volts.
+    set_bit_false(buffer, LED_ANODE_PIN);
 }
 
 // led cathode pins are low for on, high for off

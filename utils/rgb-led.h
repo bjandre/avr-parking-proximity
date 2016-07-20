@@ -38,6 +38,7 @@
 
 void turn_led_on(volatile uint8_t *buffer);
 void turn_led_off(volatile uint8_t *buffer);
+void turn_off_led_anode(volatile uint8_t *buffer);
 
 uint8_t get_led_switch_status(volatile uint8_t *buffer);
 
