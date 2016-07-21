@@ -13,8 +13,22 @@
 // indicator.  red --> too close, blue --> too far away, green -->
 // good distance.
 //
+// Notes:
+//
+// Chip functionality used:
+//
+// * usart rx for receiving ranging data
+//
+// * usart tx for debugging output
+//
+// * port b pins for output controling the led
+//
+// * 8 bit timer/counter 0 for pwm on the led.
+// 
+// * 16 bit timer/counter 1 for measuring how long the sonar
+// range has been in the current state.
+//
 
-    
 // #define F_CPU 1000000UL // clock frequency (Hz) defined in makefile!
 
 #include <stdlib.h>
@@ -43,6 +57,7 @@
 
 typedef struct {
     uint8_t sonar_range; // [inches], integer range 0-254
+    uint16_t sonar_range_timer;
 } global_async_data_type;
 
 global_async_data_type async_data;
@@ -53,6 +68,7 @@ void cycle_led(void);
 void watchdog_off(void);
 void watchdog_init(uint8_t interval);
 void sonar_init();
+void range_timer_init();
 
 int main(void) {
     cli(); // clear global interrupts for initialization
@@ -98,7 +114,19 @@ int main(void) {
         }
         uint8_t delta_range = abs(sonar_range_current - sonar_range_previous);
         sonar_range_previous = sonar_range_current;
-        if (delta_range <= max_delta_range) {
+        if (delta_range > max_delta_range) {
+            // things are changing, reset timers tracking range
+            cli();
+            TCNT1 = 0;
+            async_data.sonar_range_timer = 0;
+            sei();
+            
+        }
+        cli();
+        uint16_t range_timer = async_data.sonar_range_timer;
+        sei();
+        static const uint16_t steady_state_range = 1024;
+        if (range_timer > steady_state_range) {
             // range not changing. Disable ranging and led to conserve
             // power then go to sleep.
             turn_led_off(&PORTB);
@@ -156,7 +184,7 @@ void usart_init(void) {
 } // end usart_init()
 
 
-// header avr/iotn2313.h contains processor specific info
+// header avr/iotn2313.h contains processor specific interrupt names
 ISR(USART_RX_vect, ISR_BLOCK) {
     uint8_t received_byte = UDR;
     if (DEBUG_SERIAL) {
@@ -251,4 +279,29 @@ void watchdog_init(uint8_t interval) {
 ISR(WDT_OVERFLOW_vect) {
     // Every time the watchdog timer goes off, call this interrupt to
     // wake up from sleep.
+}
+
+void range_timer_init(void) {
+    // setup a timer to monitor changes to the range. Reset the
+    // counter every time the state changes. Go to sleep if the state
+    // hasn't changed in X time period.
+
+    // setup 16bit timer/counter 1 with internal clock source, clk/1024 scaling
+    uint8_t prescale = (1 << CS10) | (0 << CS11) | (1 << CS12);
+    set_bit_true(&TCCR1B, prescale);
+
+    // normal counter mode, overflow at top, resume counting at
+    // bottom. timer1 overflow flag will be set in the same clock
+    // cycle as the overflow.
+    uint8_t mode_a = (0 << WGM10) | (0 << WGM11);
+    uint8_t mode_b = (0 << WGM12) | (0 << WGM13);
+        
+    set_bit_true(&TCCR1A, mode_a); 
+    set_bit_true(&TCCR1B, mode_b);
+
+}
+
+ISR(TIMER1_OVF_vect, ISR_BLOCK) {
+    // 16 bit timer/counter 1 overflowed, increment the software counter.
+    async_data.sonar_range_timer++;
 }
