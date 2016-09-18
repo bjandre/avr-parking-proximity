@@ -286,18 +286,19 @@ void range_timer_init(void) {
     // counter every time the state changes. Go to sleep if the state
     // hasn't changed in X time period.
 
-    // setup 16bit timer/counter 1 with internal clock source, clk/1024 scaling
-    uint8_t prescale = (1 << CS10) | (0 << CS11) | (1 << CS12);
-    set_bit_true(&TCCR1B, prescale);
+    // setup 16bit timer/counter 1 with internal clock source, 011 = clk/64 scaling
+    // setup 16bit timer/counter 1 with internal clock source, 101 = clk/1024 scaling
+    set_bit_true(&TCCR1B, CS10);
+    set_bit_false(&TCCR1B, CS11);
+    set_bit_true(&TCCR1B, CS12);
 
     // normal counter mode, overflow at top, resume counting at
     // bottom. timer1 overflow flag will be set in the same clock
     // cycle as the overflow.
-    uint8_t mode_a = (0 << WGM10) | (0 << WGM11);
-    uint8_t mode_b = (0 << WGM12) | (0 << WGM13);
-        
-    set_bit_true(&TCCR1A, mode_a); 
-    set_bit_true(&TCCR1B, mode_b);
+    set_bit_false(&TCCR1A, WGM10);
+    set_bit_false(&TCCR1A, WGM11);
+    set_bit_false(&TCCR1B, WGM12);
+    set_bit_false(&TCCR1B, WGM13);
 
 }
 
