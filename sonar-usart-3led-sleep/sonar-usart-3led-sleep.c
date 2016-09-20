@@ -128,7 +128,9 @@ int main(void) {
         cli();
         uint16_t range_timer = async_data.sonar_range_timer;
         sei();
-        static const uint16_t steady_state_range = 1024;
+        // FIXME(bja, 2016-09) compute steady state range cutoff based
+        // on desired time in seconds, clock speed and prescaler....
+        static const uint16_t steady_state_range = 10;
         if (range_timer > steady_state_range) {
             // range not changing. Disable ranging and led to conserve
             // power then go to sleep.
@@ -291,8 +293,8 @@ void range_timer_init(void) {
     // setup 16bit timer/counter 1 with internal clock source, 011 = clk/64 scaling
     // setup 16bit timer/counter 1 with internal clock source, 101 = clk/1024 scaling
     set_bit_true(&TCCR1B, CS10);
-    set_bit_false(&TCCR1B, CS11);
-    set_bit_true(&TCCR1B, CS12);
+    set_bit_true(&TCCR1B, CS11);
+    set_bit_false(&TCCR1B, CS12);
 
     // normal counter mode, overflow at top, resume counting at
     // bottom. timer1 overflow flag will be set in the same clock
