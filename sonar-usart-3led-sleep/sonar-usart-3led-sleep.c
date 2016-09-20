@@ -94,6 +94,8 @@ int main(void) {
     uint8_t sonar_range_current; // [inches]
     sonar_range_previous = async_data.sonar_range + max_delta_range + 1;
 
+    range_timer_init();
+
     // watchdog_init(WDTO_1S);
     watchdog_init(WDTO_500MS);
     
@@ -300,6 +302,8 @@ void range_timer_init(void) {
     set_bit_false(&TCCR1B, WGM12);
     set_bit_false(&TCCR1B, WGM13);
 
+    // enable timer 1 overflow interupt
+    set_bit_true(&TIMSK, TOIE1);
 }
 
 ISR(TIMER1_OVF_vect, ISR_BLOCK) {
