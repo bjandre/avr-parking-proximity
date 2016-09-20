@@ -107,14 +107,6 @@ int main(void) {
         cli();
         sonar_range_current = async_data.sonar_range;
         sei();
-        turn_led_on(&PORTB);
-        if (sonar_range_current < 30) {
-            set_led_red(&PORTB);
-        } else if (sonar_range_current > 60) {
-            set_led_blue(&PORTB);
-        } else {
-            set_led_green(&PORTB);
-        }
         uint8_t delta_range = abs(sonar_range_current - sonar_range_previous);
         sonar_range_previous = sonar_range_current;
         if (delta_range > max_delta_range) {
@@ -134,13 +126,22 @@ int main(void) {
         if (range_timer > steady_state_range) {
             // range not changing. Disable ranging and led to conserve
             // power then go to sleep.
-            turn_off_led_anode(&PORTB);
+            turn_led_off(&PORTB);
             set_bit_false(&PORTB, SONAR_RANGING_PIN);
 
             sleep_mode();
             
             set_bit_true(&PORTB, SONAR_RANGING_PIN);
-        }
+        } else {
+            turn_led_on(&PORTB);
+            if (sonar_range_current < 30) {
+                set_led_red(&PORTB);
+            } else if (sonar_range_current > 60) {
+                set_led_blue(&PORTB);
+            } else {
+                set_led_green(&PORTB);
+            }
+        }        
     }
   
     return 0;
