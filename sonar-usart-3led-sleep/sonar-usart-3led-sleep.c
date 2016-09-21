@@ -52,6 +52,7 @@
 
 #define delay1 250.0
 #define delay2 6500.0
+#define delay_start_ranging_us 20
 
 #define DEBUG_SERIAL 1
 
@@ -132,6 +133,7 @@ int main(void) {
             sleep_mode();
             
             set_bit_true(&PORTB, SONAR_RANGING_PIN);
+            _delay_us(delay_start_ranging_us);
         } else {
             turn_led_on(&PORTB);
             if (sonar_range_current < 30) {
