@@ -50,16 +50,22 @@
 #include "rgb-led.h"
 #include "sonar-string.h"
 
-#define delay1 250.0
-#define delay2 6500.0
+#define DEBUG_SERIAL 1
+
+static const double delay1 = 250.0;
+static const double delay2 = 6500.0;
 
 // delay necessary to trigger ranging
-#define delay_start_ranging_us 20
+static const double delay_start_ranging_us = 20.0;
 
 // time of one ranging cycle
-#define delay_ranging_cycle_ms 50
+static const double delay_ranging_cycle_ms = 50.0;
 
-#define DEBUG_SERIAL 1
+// minimum desired range 
+static const uint8_t range_minimum = 30;
+static const uint8_t range_maximum = 60;
+static const uint8_t max_delta_range = 3; // [inches]
+
 
 typedef struct {
     uint8_t sonar_range; // [inches], integer range 0-254
@@ -95,7 +101,6 @@ int main(void) {
     // initialize the range integer
     async_data.sonar_range = sonar_string_as_int(async_data.sonar_range);
     // initialize local range data
-    static const uint8_t max_delta_range = 3; // [inches]
     uint8_t sonar_range_previous; // [inches]
     uint8_t sonar_range_current; // [inches]
     sonar_range_previous = async_data.sonar_range + max_delta_range + 1;
@@ -150,9 +155,9 @@ int main(void) {
             _delay_ms(delay_ranging_cycle_ms);
         } else {
             turn_led_on(&PORTB);
-            if (sonar_range_current < 30) {
+            if (sonar_range_current < range_minimum) {
                 set_led_red(&PORTB);
-            } else if (sonar_range_current > 60) {
+            } else if (sonar_range_current > range_maximum) {
                 set_led_blue(&PORTB);
             } else {
                 set_led_green(&PORTB);
