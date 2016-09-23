@@ -52,7 +52,12 @@
 
 #define delay1 250.0
 #define delay2 6500.0
+
+// delay necessary to trigger ranging
 #define delay_start_ranging_us 20
+
+// time of one ranging cycle
+#define delay_ranging_cycle_ms 50
 
 #define DEBUG_SERIAL 1
 
@@ -133,7 +138,16 @@ int main(void) {
             sleep_mode();
             
             set_bit_true(&PORTB, SONAR_RANGING_PIN);
-            _delay_us(delay_start_ranging_us);
+            
+            // NOTE(bja, 2016-09) the sonar appears to be getting
+            // confused and stuck reporting minimum distance. The
+            // event loop is very short, and it's likely that we are
+            // trying to turn the sonar on/off in the middle of a
+            // ranging cycle...? Setting a delay to ensure one
+            // complete cycle guarentees we get a new data point and
+            // seems to prevent the sonar from getting stuck at the
+            // minimum range.
+            _delay_ms(delay_ranging_cycle_ms);
         } else {
             turn_led_on(&PORTB);
             if (sonar_range_current < 30) {
