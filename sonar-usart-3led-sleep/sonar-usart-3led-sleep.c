@@ -101,9 +101,8 @@ int main(void) {
     // initialize the range integer
     async_data.sonar_range = sonar_string_as_int(async_data.sonar_range);
     // initialize local range data
-    uint8_t sonar_range_previous; // [inches]
-    uint8_t sonar_range_current; // [inches]
-    sonar_range_previous = async_data.sonar_range + max_delta_range + 1;
+    uint8_t sonar_range_current = async_data.sonar_range; // [inches]
+    uint8_t sonar_range_previous = sonar_range_current + max_delta_range + 1;; // [inches]
 
     range_timer_init();
 
