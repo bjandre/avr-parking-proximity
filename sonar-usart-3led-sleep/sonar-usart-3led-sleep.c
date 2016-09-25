@@ -74,6 +74,7 @@ typedef struct {
 
 global_async_data_type async_data;
 
+void initialize_hardware(void);
 void usart_init(void);
 void led_pwm_init(void);
 void cycle_led(void);
@@ -84,31 +85,15 @@ void range_timer_init();
 
 int main(void) {
     cli(); // clear global interrupts for initialization
-    watchdog_off();
+    watchdog_off(); // disable watchdog from previous run
 
-    usart_init();
+    initialize_hardware();
 
-    led_pwm_init();
-    cycle_led();
-    // intial state of led
-    OCR0A = 0xff;
-    set_led_white(&PORTB);
-    turn_led_on(&PORTB);
-    _delay_ms(delay1);
-
-    sonar_init();
+    // initialization of sonar range data
     sonar_string_init();
-    // initialize the range integer
     async_data.sonar_range = sonar_string_as_int(async_data.sonar_range);
-    // initialize local range data
     uint8_t sonar_range_current = async_data.sonar_range; // [inches]
     uint8_t sonar_range_previous = sonar_range_current + max_delta_range + 1;; // [inches]
-
-    range_timer_init();
-
-    // watchdog_init(WDTO_1S);
-    watchdog_init(WDTO_500MS);
-    
 
     // finished initialization, now we can enable global interupts
     sei();
@@ -125,8 +110,8 @@ int main(void) {
             TCNT1 = 0;
             async_data.sonar_range_timer = 0;
             sei();
-            
         }
+
         cli();
         uint16_t range_timer = async_data.sonar_range_timer;
         sei();
@@ -167,6 +152,17 @@ int main(void) {
     return 0;
 }
 
+void initialize_hardware(void) {
+    // cycle led has a lot of delays, finish it before starting timers.
+    led_pwm_init();
+    cycle_led();
+    
+    usart_init();
+    sonar_init();
+    range_timer_init();
+    // watchdog_init(WDTO_1S);
+    watchdog_init(WDTO_500MS);
+}
 
 void usart_init(void) {
 
@@ -204,8 +200,6 @@ void usart_init(void) {
         // enable the transmitter for debugging
         set_bit_true(&UCSRB, TXEN);
     }
-
-    
 } // end usart_init()
 
 
@@ -221,11 +215,14 @@ ISR(USART_RX_vect, ISR_BLOCK) {
 }
 
 void sonar_init(void) {
-    // turn on sonar for continuous ranging
-
-    // setup pin for output
+    // setup ranging control pin for output
     set_bit_true(&DDRB, SONAR_RANGING_PIN);
+
+    // turn on sonar for continuous ranging
     set_bit_true(&PORTB, SONAR_RANGING_PIN);
+
+    // wait for one full ranging cycle
+    _delay_ms(delay_ranging_cycle_ms);
 }
 
 void led_pwm_init(void) {
@@ -263,11 +260,15 @@ void cycle_led(void) {
     _delay_ms(delay1);
     turn_led_off(&PORTB);
     _delay_ms(delay1);
+    turn_led_on(&PORTB);
+    set_led_white(&PORTB);
+    _delay_ms(delay1);
 }
 
 void watchdog_off(void) {
     // C example from page 40 of attiny spec
     cli(); 
+    // start timed sequence for changing the watchdog
     MCUSR &= ~(1 << WDRF);
     /* Write logical one to WDCE and WDE */
     /* Keep old prescaler setting to prevent unintentional time-out */
