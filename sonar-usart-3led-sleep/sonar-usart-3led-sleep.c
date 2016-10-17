@@ -72,7 +72,7 @@ typedef struct {
     uint16_t sonar_range_timer;
 } global_async_data_type;
 
-global_async_data_type async_data;
+global_async_data_type volatile async_data;
 
 void initialize_hardware(void);
 void usart_init(void);
