@@ -34,5 +34,5 @@ $(LIB) :$(OBJS)
 
 
 clean :
-	rm -rf *~ *.o lfuse.hex hfuse.hex efuse.hex $(HEX) $(ELF)
+	rm -rf *~ *.o lfuse.hex hfuse.hex efuse.hex $(LIB) $(HEX) $(ELF)
 
