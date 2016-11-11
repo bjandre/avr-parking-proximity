@@ -122,20 +122,19 @@ int main(void) {
             // range not changing. Disable ranging and led to conserve
             // power then go to sleep.
             turn_led_off(&PORTB);
-            set_bit_false(&PORTB, SONAR_RANGING_PIN);
 
+            // FIXME(bja, 2016-10) disable sonar ranging when hardware is implemented.
+            
             sleep_mode();
             
-            set_bit_true(&PORTB, SONAR_RANGING_PIN);
+            // FIXME(bja, 2016-10) enable sonar ranging when hardware is implemented
             
             // NOTE(bja, 2016-09) the sonar appears to be getting
-            // confused and stuck reporting minimum distance. The
-            // event loop is very short, and it's likely that we are
-            // trying to turn the sonar on/off in the middle of a
-            // ranging cycle...? Setting a delay to ensure one
-            // complete cycle guarentees we get a new data point and
-            // seems to prevent the sonar from getting stuck at the
-            // minimum range.
+            // confused and stuck reporting minimum distance. Or the
+            // ring buffer is getting corrupted. The event loop is
+            // very short, and it's likely that we are cycling faster
+            // than a ranging cycle? Setting a delay to ensure one
+            // complete cycle guarentees we get a new data point.
             _delay_ms(delay_ranging_cycle_ms);
         } else {
             turn_led_on(&PORTB);
@@ -216,10 +215,12 @@ ISR(USART_RX_vect, ISR_BLOCK) {
 
 void sonar_init(void) {
     // setup ranging control pin for output
-    set_bit_true(&DDRB, SONAR_RANGING_PIN);
 
-    // turn on sonar for continuous ranging
-    set_bit_true(&PORTB, SONAR_RANGING_PIN);
+    // FIXME(bja, 2016-10) by default the sonar is on for continuous
+    // ranging. Set the port for ranging control once hardware is
+    // implemented.
+    // set_bit_true(&DDRB, SONAR_RANGING_PIN);
+    // set_bit_false(&PORTB, SONAR_RANGING_PIN);
 
     // wait for one full ranging cycle
     _delay_ms(delay_ranging_cycle_ms);
@@ -313,6 +314,7 @@ void range_timer_init(void) {
     // hasn't changed in X time period.
 
     // setup 16bit timer/counter 1 with internal clock source, 011 = clk/64 scaling
+    // setup 16bit timer/counter 1 with internal clock source, 100 = clk/256 scaling
     // setup 16bit timer/counter 1 with internal clock source, 101 = clk/1024 scaling
     set_bit_true(&TCCR1B, CS10);
     set_bit_true(&TCCR1B, CS11);
