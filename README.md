@@ -1,10 +1,24 @@
-Personal avr development projects to get familiar with avr-libc..
+Code and electrical schematic for a garage parking proximity meter.
 
-# External dependencies #
+# Hardware:
+* MCU - Atmel AVR attiny2313
+* Ultrasonic distance sensor - MaxBotix LV-MaxSonar-EZ
+* Adafruit LIPO/Li-Ion battery charging circut
 
-avr-gcc, avrdude
+# source
+* 3rd-party/ - 3rd-party dependancies
 
-Building on OS X with homebrew requires:
+* utils/ - break out reusable code for bit operations and led manipulation, with unit tests
+
+* sonar-pwm-3led/ - receive sonar signal via a pulse width signal, change LED color depending on distance.
+
+* sonar-usart-3led-sleep/ - receive sonar signal over serial signal, change LED color depending on distance, sleep mcu when readings are stable, periodically wake to detect changes.
+
+# External dependencies
+
+Build and flash requires avr-gcc, avr-libc and avrdude
+
+Building on macOS with homebrew requires:
 
 * avrdude
 * osx-cross/avr/avr-gcc
@@ -17,12 +31,7 @@ and can be built with:
     cd 3rd-party
     make cmocka
     
+Circuit schematic requires [KiCad](http://kicad-pcb.org/)
 
-# Projects #
-
-* single-led - turn on a single led
-* single-led-pwm - turn on a single led with pulse width modulation
-* three-leds - change colors on an RGB LED
-* three-leds-pwm - change colors on an RGB LED using pulse width modulation
-* sonar-pwm-3led - use an ultrosonic sonar sending a pulse width signal, change LED color depending on distance.
-* sonar-usart-3led - use an ultrosonic sonar sending a serial signal, change LED color depending on distance.
+# TODO
+* disable sonar ranging and periodically wake up to preserve battery.
